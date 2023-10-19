@@ -10,7 +10,7 @@ This API provides access to data related to Asmaul Husna. It's built with FastAP
 4. From the terminal, run `uvicorn main:app --reload`.
 
 ## Endpoints
-There are three available endpoints:
+There are four available endpoints:
 
 **1. GET /** 
 Return a welcome message.
@@ -20,6 +20,9 @@ Returns all data inside 'asmaul-husna.json' file.
 
 **3. GET /asmaul-husna/{id}**
 Returns specific data based on id from 'asmaul-husna.json' file. If the id does not exist, it will return an HTTPException with status code 404.
+
+**4. GET /asmaul-husna/random**
+Returns a random data from 'asmaul-husna.json' file.
 
 ## Future Plans
 Add more endpoints in the future to explore other aspects of the data provided in 'asmaul-husna.json'.
