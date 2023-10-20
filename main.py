@@ -2,10 +2,9 @@ import json
 import os
 import random
 from typing import List
-
-import requests
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from fastapi.responses import HTMLResponse
 
 app = FastAPI()
 
@@ -35,20 +34,38 @@ class Ayat(BaseModel):
     nomor: str
     tr: str
 
-
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
+def read_home():
+    return """
+    <html>
+        <head>
+            <title>Muslim API</title>
+        </head>
+        <body>
+          <h1>Welcome to Muslim API</h1>
+          <p>
+            A REST API that provides access to data related to Asmaul Husna and Quran.
+          </p>
+          <ul>
+            <li><a href="/api/asmaul-husna">Asmaul Husna</a></li>
+            <li><a href="/api/quran">Quran Surah</a></li>
+          </ul>
+        </body>
+    </html>
+    """
+@app.get("/api/")
 def read_root():
-    return {"Title : Muslim API"}
+    return {"Title" : "Muslim API"}
 
 
-@app.get("/asmaul-husna")
+@app.get("api/asmaul-husna")
 async def root():
     with open('data/asmaul-husna.json') as f:
         data = json.load(f)
     return data
 
 
-@app.get("/asmaul-husna/random", response_model=Data)
+@app.get("api/asmaul-husna/random", response_model=Data)
 async def read_random_asmaul_husna():
     with open('data/asmaul-husna.json') as f:
         data = json.load(f)
@@ -57,7 +74,7 @@ async def read_random_asmaul_husna():
     return {"arabic": data[random_id]['arab'], "latin": data[random_id]['latin'], "arti": data[random_id]['artinya']}
 
 
-@app.get("/asmaul-husna/{id}", response_model=Data)
+@app.get("api/asmaul-husna/{id}", response_model=Data)
 async def read_asmaul_husna(id: str):
     with open('data/asmaul-husna.json') as f:
         data = json.load(f)
@@ -68,7 +85,7 @@ async def read_asmaul_husna(id: str):
         raise HTTPException(status_code=404, detail="Not found")
 
 
-@app.get("/quran", response_model=List[QuranData])
+@app.get("api/quran", response_model=List[QuranData])
 def get_quran():
     with open('data/quran.json') as file:
         data = json.load(file)
@@ -76,7 +93,7 @@ def get_quran():
         return data
 
 
-@app.get("/quran/{nomor}")
+@app.get("api/quran/{nomor}")
 def get_quran_nor(nomor: str):
     with open('data/quran.json') as file:
         data = json.load(file)
@@ -88,7 +105,7 @@ def get_quran_nor(nomor: str):
     return {"message": "Not found"}
 
 
-@app.get("/quran/{nomor}/detail", response_model=List[Ayat])
+@app.get("api/quran/{nomor}/detail", response_model=List[Ayat])
 def read_quran_detail(nomor: str):
     file_path = f"data/surah/{nomor}.json"
     if os.path.exists(file_path):
