@@ -25,6 +25,15 @@ async def root():
     return data
 
 
+@app.get("/asmaul-husna/random", response_model=Data)
+async def read_random_asmaul_husna():
+    with open('asmaul-husna.json') as f:
+        data = json.load(f)
+
+    random_id = random.choice(list(data.keys()))
+    return {"arabic": data[random_id]['arab'], "latin": data[random_id]['latin'], "arti": data[random_id]['artinya']}
+
+
 @app.get("/asmaul-husna/{id}", response_model=Data)
 async def read_asmaul_husna(id: str):
     with open('asmaul-husna.json') as f:
@@ -34,12 +43,3 @@ async def read_asmaul_husna(id: str):
         return {"arabic": data[id]['arab'], "latin": data[id]['latin'], "arti": data[id]['artinya']}
     else:
         raise HTTPException(status_code=404, detail="Not found")
-
-
-@app.get("/asmaul-husna/random", response_model=Data)
-async def read_random_asmaul_husna():
-    with open('asmaul-husna.json') as f:
-        data = json.load(f)
-
-    random_id = random.choice(list(data.keys()))
-    return {"arabic": data[random_id]['arab'], "latin": data[random_id]['latin'],"arti": data[random_id]['artinya']}
