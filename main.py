@@ -65,3 +65,15 @@ def get_quran():
         data = json.load(file)
 
         return data
+
+
+@app.get("/quran/{nomor}")
+def get_quran_nor(nomor: str):
+    with open('quran.json') as file:
+        data = json.load(file)
+
+    for item in data:
+        if item['nomor'] == nomor:
+            return item
+
+    return {"message": "Not found"}
