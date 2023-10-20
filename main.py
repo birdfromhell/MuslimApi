@@ -1,5 +1,6 @@
 import json
 import random
+from typing import List
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -11,6 +12,19 @@ class Data(BaseModel):
     arabic: str
     latin: str
     arti: str
+
+
+class QuranData(BaseModel):
+    arti: str
+    asma: str
+    audio: str
+    ayat: int
+    keterangan: str
+    nama: str
+    nomor: str
+    rukuk: str
+    type: str
+    urut: str
 
 
 @app.get("/")
@@ -43,3 +57,11 @@ async def read_asmaul_husna(id: str):
         return {"arabic": data[id]['arab'], "latin": data[id]['latin'], "arti": data[id]['artinya']}
     else:
         raise HTTPException(status_code=404, detail="Not found")
+
+
+@app.get("/quran", response_model=List[QuranData])
+def get_quran():
+    with open('quran.json') as file:
+        data = json.load(file)
+
+        return data
