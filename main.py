@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse
 app = FastAPI()
 
 
-class Data(BaseModel):
+class AsmaulData(BaseModel):
     arabic: str
     latin: str
     arti: str
@@ -33,6 +33,14 @@ class Ayat(BaseModel):
     id: str
     nomor: str
     tr: str
+
+
+# Initializing data
+with open('data/asmaul-husna.json') as f:
+    asmaul_husna_data = json.load(f)
+
+with open('data/quran.json') as f:
+    quran_data = json.load(f)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -74,6 +82,7 @@ def read_home():
     </html>
     """
 
+
 @app.get("/api/")
 def read_root():
     return {"Title": "Muslim API"}
@@ -81,49 +90,37 @@ def read_root():
 
 @app.get("/api/asmaul-husna")
 async def root():
-    with open('data/asmaul-husna.json') as f:
-        data = json.load(f)
-    return data
+    return asmaul_husna_data
 
 
-@app.get("/api/asmaul-husna/random", response_model=Data)
+@app.get("/api/asmaul-husna/random", response_model=AsmaulData)
 async def read_random_asmaul_husna():
-    with open('data/asmaul-husna.json') as f:
-        data = json.load(f)
-
-    random_id = random.choice(list(data.keys()))
-    return {"arabic": data[random_id]['arab'], "latin": data[random_id]['latin'], "arti": data[random_id]['artinya']}
+    random_id = random.choice(list(asmaul_husna_data.keys()))
+    return {"arabic": asmaul_husna_data[random_id]['arab'], "latin": asmaul_husna_data[random_id]['latin'],
+            "arti": asmaul_husna_data[random_id]['artinya']}
 
 
-@app.get("/api/asmaul-husna/{id}", response_model=Data)
+@app.get("/api/asmaul-husna/{id}", response_model=AsmaulData)
 async def read_asmaul_husna(id: str):
-    with open('data/asmaul-husna.json') as f:
-        data = json.load(f)
-
-    if id in data:
-        return {"arabic": data[id]['arab'], "latin": data[id]['latin'], "arti": data[id]['artinya']}
+    if id in asmaul_husna_data:
+        return {"arabic": asmaul_husna_data[id]['arab'], "latin": asmaul_husna_data[id]['latin'],
+                "arti": asmaul_husna_data[id]['artinya']}
     else:
-        raise HTTPException(status_code=404, detail="Not found")
+        raise HTTPException(status_code=404, detail=f"Asmaul husna with id {id} is not found")
 
 
 @app.get("/api/quran", response_model=List[QuranData])
 def get_quran():
-    with open('data/quran.json') as file:
-        data = json.load(file)
-
-        return data
+    return quran_data
 
 
 @app.get("/api/quran/{nomor}")
 def get_quran_nor(nomor: str):
-    with open('data/quran.json') as file:
-        data = json.load(file)
-
-    for item in data:
+    for item in quran_data:
         if item['nomor'] == nomor:
             return item
 
-    return {"message": "Not found"}
+    raise HTTPException(status_code=404, detail=f"Quran with nomor {nomor} is not found")
 
 
 @app.get("/api/quran/{nomor}/detail", response_model=List[Ayat])
@@ -134,4 +131,4 @@ def read_quran_detail(nomor: str):
             data = json.load(file)
         return data
     else:
-        raise HTTPException(status_code=404, detail="Surah not found")
+        raise HTTPException(status_code=404, detail=f"Surah with nomor {nomor} is not found")
