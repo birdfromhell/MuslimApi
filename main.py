@@ -2,11 +2,18 @@ import json
 import os
 import random
 from typing import List
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Depends
 from pydantic import BaseModel
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.middleware import Middleware
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from slowapi import Limiter
 
-app = FastAPI()
+limiter = Limiter(key_func=get_remote_address, default_limits=["10/minute"])
+
+app = FastAPI(middleware=[Middleware(SlowAPIMiddleware, limiter=limiter)])
 
 
 class AsmaulData(BaseModel):
@@ -41,6 +48,11 @@ with open('data/asmaul-husna.json') as f:
 
 with open('data/quran.json') as f:
     quran_data = json.load(f)
+
+
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return PlainTextResponse(str(exc), status_code=429)
 
 
 @app.get("/", response_class=HTMLResponse)
