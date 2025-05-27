@@ -1,34 +1,104 @@
-# Project Title: Muslim API
+# Muslim API
 
-## Overview
-This API provides access to data related to Asmaul Husna and Quran Surah. It's built with FastAPI and reads data from a JSON file. 
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![JSON](https://img.shields.io/badge/JSON-000000?style=for-the-badge&logo=json&logoColor=white)
 
-## How to Run
-1. Install required packages with `pip install fastapi uvicorn`.
-2. Replace 'asmaul-husna.json' and 'quran.json' with the path to your JSON files.
-3. Save the script as 'main.py' for example.
-4. From the terminal, run `uvicorn main:app --reload`.
+## 📖 Overview
+Muslim API provides a RESTful interface to access Islamic content including Asmaul Husna (99 Names of Allah) and Quran Surahs. Built with FastAPI for high performance and ease of use, this API serves data from JSON sources making it lightweight and efficient.
 
-## Endpoints
-There are six available endpoints:
+## ✨ Features
+- Fast and lightweight API using FastAPI
+- Access to complete Asmaul Husna data
+- Access to Quran Surah information
+- Random Asmaul Husna endpoint
+- Detailed error handling
 
-**1. GET /** 
-Return a welcome message.
+## 🛠️ Tech Stack
+- Python 3.8+
+- FastAPI
+- Uvicorn ASGI server
+- JSON for data storage
 
-**2. GET /asmaul-husna**
-Returns all data inside 'asmaul-husna.json' file.
+## 🚀 Installation
 
-**3. GET /asmaul-husna/{id}**
-Returns specific data based on id from 'asmaul-husna.json' file. If the id does not exist, it will return an HTTPException with status code 404.
+### Prerequisites
+- Python 3.8 or higher
+- pip package manager
 
-**4. GET /asmaul-husna/random**
-Returns a random data from 'asmaul-husna.json' file.
+### Setup
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/MuslimApi.git
+   cd MuslimApi
+   ```
 
-**5. GET /quran**
-Returns all data inside 'quran.json' file.
+2. Install required dependencies:
+   ```bash
+   pip install fastapi uvicorn
+   ```
 
-**6. GET /quran/{nomor}**
-Returns specific Surah based on 'nomor' from 'quran.json' file. If the 'nomor' does not exist, it will return a message "Nomor Surah not found". 
+3. Prepare your JSON data files:
+   - Place your `asmaul-husna.json` file in the project directory
+   - Place your `quran.json` file in the project directory
 
-## Future Plans
-Add more endpoints in the future to explore other aspects of the data provided in 'asmaul-husna.json' and 'quran.json'.
+4. Start the server:
+   ```bash
+   uvicorn main:app --reload
+   ```
+
+5. Access the API documentation at: `http://localhost:8000/docs`
+
+## 📡 API Endpoints
+
+### Base Endpoint
+- **GET /** - Welcome message and API information
+
+### Asmaul Husna Endpoints
+- **GET /asmaul-husna** - Retrieve all 99 Names of Allah
+- **GET /asmaul-husna/{id}** - Get specific Asmaul Husna by ID (1-99)
+- **GET /asmaul-husna/random** - Get a random Name from Asmaul Husna
+
+### Quran Endpoints
+- **GET /quran** - Retrieve information about all Surahs
+- **GET /quran/{nomor}** - Get specific Surah details by number
+
+## 📝 Response Examples
+
+### Asmaul Husna Response
+```json
+{
+  "urutan": 1,
+  "latin": "Ar Rahman",
+  "arab": "الرحمن",
+  "arti": "Yang Maha Pengasih"
+}
+```
+
+### Quran Surah Response
+```json
+{
+  "nomor": 1,
+  "nama": "الفاتحة",
+  "nama_latin": "Al-Fatihah",
+  "jumlah_ayat": 7,
+  "tempat_turun": "mekah",
+  "arti": "Pembukaan"
+}
+```
+
+## 🔮 Future Plans
+- Add ayat-by-ayat Quran endpoint
+- Include hadith collection API
+- Add prayer times calculation
+- Multi-language support
+- Authentication for premium features
+
+## 🤝 Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 📞 Contact
+For questions or feedback, please open an issue in the GitHub repository.
